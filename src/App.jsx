@@ -20,6 +20,7 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 
 import Orders from './pages/Orders';
+import Settings from './pages/account/Settings';
 
 import { CartWishlistProvider } from './context/CartWishlistContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -46,6 +47,7 @@ function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/account/settings" element={<Settings />} />
           </Route>
 
           {/* Auth pages without layout */}

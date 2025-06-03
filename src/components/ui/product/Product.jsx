@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useContext, useState, useCallback, useMemo } from 'react';
 import { FiHeart, FiShoppingBag, FiEye } from 'react-icons/fi';
 import { FaStar, FaRegStar } from 'react-icons/fa';
