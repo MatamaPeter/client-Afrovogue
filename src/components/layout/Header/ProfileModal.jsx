@@ -11,7 +11,7 @@ const ProfileModal = ({
   setUser
 }) => {
   const handleLogout = () => {
-    localStorage.removeItem('loggedInUser');
+    // localStorage.removeItem('loggedInUser');
     setIsLoggedIn(false);
     setUser(null);
     onClose();
@@ -19,33 +19,36 @@ const ProfileModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="My Account">
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* User Profile Header */}
-        <div className="text-center pb-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="text-center pb-8 border-b border-gradient-to-r from-gray-200 to-gray-100 dark:from-gray-700 dark:to-gray-800">
           {user && (
             <>
-              <div className="relative mx-auto mb-4">
-                <img 
-                  src={user.avatar} 
-                  alt={user.name} 
-                  className="w-20 h-20 rounded-full mx-auto object-cover border-4 border-indigo-100 dark:border-indigo-900/50 shadow-md"
-                />
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-indigo-600 text-white text-xs px-2 py-0.5 rounded-full">
+              <div className="relative mx-auto mb-6">
+                <div className="relative">
+                  <img 
+                    src={user.avatar} 
+                    alt={user.name} 
+                    className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-white dark:border-gray-800 shadow-xl"
+                  />
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-t from-black/20 to-transparent"></div>
+                </div>
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs px-3 py-1 rounded-full shadow-lg">
                   {user.membership}
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{user.name}</h3>
-              <p className="text-gray-500 text-sm">{user.email}</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{user.name}</h3>
+              <p className="text-gray-500 text-sm mb-4">{user.email}</p>
               
-              <div className="mt-3 flex justify-center items-center space-x-4">
+              <div className="flex justify-center items-center space-x-8">
                 <div className="text-center">
-                  <div className="text-indigo-600 font-bold">{user.points}</div>
-                  <div className="text-xs text-gray-500">Reward Points</div>
+                  <div className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{user.points}</div>
+                  <div className="text-xs text-gray-500 mt-1">Reward Points</div>
                 </div>
-                <div className="h-6 w-px bg-gray-200 dark:bg-gray-700"></div>
+                <div className="h-8 w-px bg-gradient-to-b from-gray-200 to-transparent dark:from-gray-700"></div>
                 <div className="text-center">
-                  <div className="font-bold text-gray-900 dark:text-white">{user.orders}</div>
-                  <div className="text-xs text-gray-500">Orders</div>
+                  <div className="text-2xl font-bold text-gray-900 dark:text-white">{user.orders}</div>
+                  <div className="text-xs text-gray-500 mt-1">Orders</div>
                 </div>
               </div>
             </>
@@ -53,48 +56,32 @@ const ProfileModal = ({
         </div>
         
         {/* Quick Actions */}
-        <div className="grid grid-cols-3 gap-2">
-          <Link
-            to="/orders"
-            onClick={onClose}
-            className="flex flex-col items-center justify-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-manipulation"
-          >
-            <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-1.5">
-              <Package size={18} className="text-indigo-600 dark:text-indigo-400" />
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { icon: Package, label: "Orders", path: "/orders" },
+            { icon: Settings, label: "Settings", path: "/account/settings" },
+            { icon: HelpCircle, label: "Help", path: "/faqs" }
+          ].map((item, index) => (
+            <div
+              key={item.label}
+              className="flex flex-col items-center justify-center p-4 rounded-2xl bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-700 hover:from-indigo-50 hover:to-purple-50 dark:hover:from-gray-700 dark:hover:to-gray-600 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-lg transform hover:-translate-y-1"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl flex items-center justify-center mb-3 shadow-sm">
+                <item.icon size={20} className="text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">{item.label}</span>
             </div>
-            <span className="text-xs font-medium">Orders</span>
-          </Link>
-
-          <Link
-            to="/account/settings"
-            onClick={onClose}
-            className="flex flex-col items-center justify-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-manipulation"
-          >
-            <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-1.5">
-              <Settings size={18} className="text-indigo-600 dark:text-indigo-400" />
-            </div>
-            <span className="text-xs font-medium">Settings</span>
-          </Link>
-
-          <Link
-            to="/faqs"
-            onClick={onClose}
-            className="flex flex-col items-center justify-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-manipulation"
-          >
-            <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-1.5">
-              <HelpCircle size={18} className="text-indigo-600 dark:text-indigo-400" />
-            </div>
-            <span className="text-xs font-medium">Help</span>
-          </Link>
+          ))}
         </div>
         
         {/* Logout Button */}
         <button 
           onClick={handleLogout}
-          className="w-full flex items-center justify-center space-x-2 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 py-3 px-4 rounded-lg border border-red-100 dark:border-red-900/30 transition-all duration-200 mt-4 touch-manipulation"
+          className="w-full flex items-center justify-center space-x-3 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 dark:hover:from-red-900/20 dark:hover:to-pink-900/20 py-4 px-6 rounded-2xl border-2 border-red-200/50 dark:border-red-800/30 transition-all duration-300 shadow-sm hover:shadow-lg transform hover:-translate-y-1"
         >
-          <LogOut size={18} />
-          <span>Sign Out</span>
+          <LogOut size={20} />
+          <span className="font-semibold">Sign Out</span>
         </button>
       </div>
     </Modal>

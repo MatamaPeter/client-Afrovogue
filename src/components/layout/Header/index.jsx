@@ -108,6 +108,9 @@ const Header = () => {
     setShowMobileMenu(false);
   };
 
+  // Filter notifications by current user id
+  const userNotifications = user ? notifications.filter(n => n.userId === user.id) : [];
+
   return (
     <>
       <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-40">
@@ -176,18 +179,20 @@ const Header = () => {
               </button>
 
               {/* Notifications */}
-              <button
-                onClick={() => setShowNotificationsModal(true)}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 group touch-manipulation"
-                title="Notifications"
-              >
-                <Bell size={18} />
-                {notifications.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
-                    {notifications.length}
-                  </span>
-                )}
-              </button>
+              {isLoggedIn && (
+                <button
+                  onClick={() => setShowNotificationsModal(true)}
+                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 group touch-manipulation"
+                  title="Notifications"
+                >
+                  <Bell size={18} />
+                  {userNotifications.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                      {userNotifications.length}
+                    </span>
+                  )}
+                </button>
+              )}
 
               {/* Shopping Cart */}
               <button 
@@ -274,7 +279,7 @@ const Header = () => {
       <NotificationsModal
         isOpen={showNotificationsModal}
         onClose={() => setShowNotificationsModal(false)}
-        notifications={notifications}
+        notifications={userNotifications}
       />
 
       {/* Profile Modal */}
