@@ -141,20 +141,20 @@ function Hero() {
               TRENDING NOW
             </span>
             <div className="mt-2 space-y-3">
-              {featuredProductsLimited.map(product => (
-                <div 
-                  key={product.id} 
-                  className="flex items-center justify-between p-3 rounded-lg hover:bg-white/30 dark:hover:bg-black/20 transition-colors cursor-pointer group transform hover:scale-[1.01]" // Added hover scale
-                  onClick={() => navigate('/shop')}
-                >
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-slate-100">
-                    {product.name}
-                  </span>
-                  <span className="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 group-hover:bg-slate-200 dark:group-hover:bg-slate-800">
-                    ${product.price}
-                  </span>
-                </div>
-              ))}
+{featuredProductsLimited.map(product => (
+  <div 
+    key={product.id} 
+    className="flex items-center justify-between p-3 rounded-lg hover:bg-white/30 dark:hover:bg-black/20 transition-colors cursor-pointer group transform hover:scale-[1.01]" // Added hover scale
+    onClick={() => navigate(`/shop/${product.id}`)}
+  >
+    <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-slate-100">
+      {product.name}
+    </span>
+    <span className="text-xs font-semibold px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 group-hover:bg-slate-200 dark:group-hover:bg-slate-800">
+      ${product.price}
+    </span>
+  </div>
+))}
             </div>
           </div>
         </div>

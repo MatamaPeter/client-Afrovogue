@@ -4,6 +4,7 @@ import { Search, ShoppingBag, Heart, User, Moon, Sun, X, Plus, Minus, Star, Sett
 import { CartWishlistContext } from "../../context/CartWishlistContext";
 import { ThemeContext } from "../../context/ThemeContext";
 import products from "../../assets/data";
+import notifications from "../../assets/notifications";
 
 const Header = () => {
   const {
@@ -20,6 +21,7 @@ const Header = () => {
   const [showCartModal, setShowCartModal] = useState(false);
   const [showWishlistModal, setShowWishlistModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
@@ -219,6 +221,20 @@ const Header = () => {
                 {wishlistItems.length > 0 && (
                   <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                     {wishlistItems.length}
+                  </span>
+                )}
+              </button>
+
+              {/* Notifications */}
+              <button
+                onClick={() => setShowNotificationsModal(true)}
+                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 group touch-manipulation"
+                title="Notifications"
+              >
+                <Bell size={18} />
+                {notifications.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                    {notifications.length}
                   </span>
                 )}
               </button>
@@ -514,6 +530,29 @@ const Header = () => {
                   ))}
                 </div>
               )}
+      </Modal>
+
+      {/* Notifications Modal */}
+      <Modal
+        isOpen={showNotificationsModal}
+        onClose={() => setShowNotificationsModal(false)}
+        title={`Notifications${notifications.length > 0 ? ` (${notifications.length})` : ''}`}
+      >
+        {notifications.length === 0 ? (
+          <div className="text-center py-8 sm:py-12">
+            <p className="text-gray-600 dark:text-gray-300 text-lg mb-2">No new notifications</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {notifications.map((notification) => (
+              <div key={notification.id} className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                <h3 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">{notification.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300 text-sm">{notification.message}</p>
+                <p className="text-xs text-gray-400 mt-1">{notification.date}</p>
+              </div>
+            ))}
+          </div>
+        )}
       </Modal>
 
       {/* Profile Modal */}
