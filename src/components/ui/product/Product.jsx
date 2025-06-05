@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useContext, useState, useCallback, useMemo } from 'react';
 import { FiHeart, FiShoppingBag, FiEye } from 'react-icons/fi';
 import { FaStar, FaRegStar } from 'react-icons/fa';
@@ -7,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 
-function Product({ product }) {
+function Product({ product, rating = 0, reviewCount = 0 }) {
   const {
     addToCart,
     addToWishlist,
@@ -120,7 +119,7 @@ function Product({ product }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: i * 0.05, duration: 0.2 }}
         >
-          {i < Math.floor(product.rating) ? (
+          {i < Math.floor(rating) ? (
             <FaStar className="text-base" />
           ) : (
             <FaRegStar className="text-base text-gray-300 dark:text-gray-600" />
@@ -135,6 +134,7 @@ function Product({ product }) {
       variants={cardVariants}
       initial="initial"
       animate="animate"
+      whileHover="hover"
       whileHover="hover"
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="h-full"
@@ -309,16 +309,16 @@ function Product({ product }) {
             {/* Rating */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                {renderStars()}
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  ({product.reviews?.length || 0})
-                </span>
-              </div>
-              
-              {/* Rating Score */}
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                {product.rating.toFixed(1)}
+              {renderStars()}
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                ({reviewCount})
               </span>
+            </div>
+            
+            {/* Rating Score */}
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              {typeof rating === 'number' ? rating.toFixed(1) : '0.0'}
+            </span>
             </div>
 
             {/* Category */}

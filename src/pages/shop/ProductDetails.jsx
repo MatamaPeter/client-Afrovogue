@@ -3,9 +3,11 @@ import { CartWishlistContext } from '../../context/CartWishlistContext';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FiArrowLeft, FiShoppingCart, FiHeart, FiShare2, FiStar, FiCheck, FiTruck, FiRefreshCw, FiShield } from 'react-icons/fi';
 import products from '../../assets/data';
+import reviewsData from '../../assets/reviews'; // eslint-disable-line no-unused-vars
 import SizeGuide from './../../components/ui/product/SizeGuide';
 import ProductGallery from './../../components/ui/product/ProductGallery';
 import ReviewSection from './../../components/ui/product/ReviewSection';
+import Product from './../../components/ui/product/Product.jsx';
 
 // Custom hook for managing toast notifications
 const useToast = () => {
@@ -277,7 +279,7 @@ const ProductDetails = () => {
     [productId]
   );
 
-  const [reviews, setReviews] = useState(product?.reviews || []);
+  const [reviews, setReviews] = useState(reviewsData);
 
   // Memoized calculations
   const availableSizes = useMemo(() => 
@@ -288,17 +290,34 @@ const ProductDetails = () => {
     [product]
   );
 
+  const filteredReviews = useMemo(() => {
+    return reviews.filter(review => review.productId.toString() === productId);
+  }, [reviews, productId]);
+
   const averageRating = useMemo(() => {
-    if (product?.reviews?.length > 0) {
-      return (product.reviews.reduce((acc, review) => acc + review.rating, 0) / product.reviews.length).toFixed(1);
+    if (filteredReviews.length > 0) {
+      return (filteredReviews.reduce((acc, review) => acc + review.rating, 0) / filteredReviews.length).toFixed(1);
     }
     return product?.rating || 0;
-  }, [product]);
+  }, [filteredReviews, product]);
 
-  const relatedProducts = useMemo(() => 
-    products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4),
-    [product]
-  );
+
+  const relatedProducts = useMemo(() => {
+    const related = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
+    // Calculate rating and reviewCount for each related product
+    return related.map(p => {
+      const productReviews = reviews.filter(r => r.productId === p.id);
+      const reviewCount = productReviews.length;
+      const averageRating = reviewCount > 0
+        ? productReviews.reduce((acc, r) => acc + r.rating, 0) / reviewCount
+        : 0;
+      return {
+        ...p,
+        rating: averageRating,
+        reviewCount,
+      };
+    });
+  }, [product]);
 
   // Effects
   useEffect(() => {
@@ -310,7 +329,7 @@ const ProductDetails = () => {
   useEffect(() => {
     if (product) {
       setIsWishlisted(isInWishlist(product.id));
-      setReviews(product.reviews || []);
+      setReviews(reviews);
     }
   }, [product, isInWishlist]);
 
@@ -412,7 +431,7 @@ const ProductDetails = () => {
 
             <RatingDisplay 
               rating={averageRating}
-              reviewCount={product.reviews.length}
+              reviewCount={filteredReviews.length}
               onReadReviews={handleReadReviews}
             />
 
@@ -565,11 +584,11 @@ const ProductDetails = () => {
               </div>
             )}
             
-            {activeTab === 'reviews' && (
+              {activeTab === 'reviews' && (
               <div role="tabpanel" id="reviews-panel">
                 <ReviewSection 
                   productId={productId} 
-                  reviews={reviews} 
+                  reviews={filteredReviews} 
                   setReviews={setReviews}
                   averageRating={averageRating}
                 />
@@ -607,7 +626,7 @@ const ProductDetails = () => {
         </div>
 
         {/* Related Products */}
-        {relatedProducts.length > 0 && (
+              {relatedProducts.length > 0 && (
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center">
               You Might Also Love These
@@ -650,11 +669,11 @@ const ProductDetails = () => {
                             </p>
                           )}
                         </div>
-                        {p.rating && (
+                        {(p.rating || p.rating === 0) && (
                           <div className="flex items-center">
                             <FiStar className="w-4 h-4 text-yellow-400 fill-current" />
                             <span className="text-sm text-gray-600 dark:text-gray-400 ml-1">
-                              {p.rating}
+                              {p.rating.toFixed(1)}
                             </span>
                           </div>
                         )}

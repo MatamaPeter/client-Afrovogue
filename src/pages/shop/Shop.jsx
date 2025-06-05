@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Product from "../../components/ui/product/Product";
 import products from "../../assets/data";
+import reviews from "../../assets/reviews";
 
 const Shop = () => {
   const location = useLocation();
@@ -37,6 +38,16 @@ const Shop = () => {
       setSearchTerm(search);
     }
   }, [location.search, categories]);
+
+  // Calculate average rating and review count for each product
+  const getRatingData = (productId) => {
+    const productReviews = reviews.filter(review => review.productId === productId);
+    const reviewCount = productReviews.length;
+    const averageRating = reviewCount > 0 
+      ? (productReviews.reduce((acc, r) => acc + r.rating, 0) / reviewCount).toFixed(1)
+      : 0;
+    return { averageRating: parseFloat(averageRating), reviewCount };
+  };
 
   // Filter and sort products
   const filteredAndSortedProducts = useMemo(() => {
@@ -215,13 +226,18 @@ const Shop = () => {
                   ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" 
                   : "space-y-4"
               }>
-                {filteredAndSortedProducts.map(product => (
-                  <Product 
-                    key={product.id} 
-                    product={product} 
-                    viewMode={viewMode}
-                  />
-                ))}
+                {filteredAndSortedProducts.map(product => {
+                  const { averageRating, reviewCount } = getRatingData(product.id);
+                  return (
+                    <Product 
+                      key={product.id} 
+                      product={product} 
+                      viewMode={viewMode}
+                      rating={averageRating}
+                      reviewCount={reviewCount}
+                    />
+                  );
+                })}
               </div>
             )}
 

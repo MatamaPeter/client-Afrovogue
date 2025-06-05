@@ -21,6 +21,7 @@ import Terms from './pages/Terms';
 
 import Orders from './pages/Orders';
 import Settings from './pages/account/Settings';
+import OrderTracking from './pages/OrderTracking';
 
 import { CartWishlistProvider } from './context/CartWishlistContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -47,6 +48,7 @@ function App() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/order-tracking" element={<OrderTracking />} />
             <Route path="/account/settings" element={<Settings />} />
           </Route>
 
