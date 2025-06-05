@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Search, ShoppingBag, Heart, User, Moon, Sun, X, Plus, Minus, Star, Settings, Package, HelpCircle, LogOut, MapPin, CreditCard, Bell, Menu } from "lucide-react";
 import { CartWishlistContext } from "../../context/CartWishlistContext";
 import { ThemeContext } from "../../context/ThemeContext";
-
+import products from "../../assets/data";
 
 const Header = () => {
   const {
@@ -25,13 +25,17 @@ const Header = () => {
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  
+
+  const categories = Array.from(new Set(products.map(product => product.category))).map(cat => {
+    return { name: cat.charAt(0).toUpperCase() + cat.slice(1).replace(/-/g, ' & ') };
+  });
+
   const navItems = [
     { name: "Shop", path: "/shop" },
-    { name: "Women", path: "/shop?category=women" },
-    { name: "Men", path: "/shop?category=men" },
-    { name: "Kids", path: "/shop?category=kids" },
-    { name: "His & Hers", path: "/shop?category=his-hers" },
+    ...categories.map(category => ({
+      name: category.name,
+      path: `/shop?category=${category.name.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-')}`
+    })),
     { name: "Custom Order", path: "/custom-order" },
     { name: "Orders", path: "/orders" }
   ];

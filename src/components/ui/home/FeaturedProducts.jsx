@@ -1,9 +1,13 @@
 import { FiArrowRight } from 'react-icons/fi';
 import products from '../../../assets/data.js';
 import Product from './../product/Product.jsx';
+import { useNavigate } from 'react-router-dom';
+
 
 function FeaturedProducts() {
   const featuredProducts = products.filter(product => product.featured);
+  const navigate = useNavigate();
+
 
   return (
     <div>
@@ -13,7 +17,7 @@ function FeaturedProducts() {
             Featured Products
           </h2>
           <a
-            href="#"
+            onClick={() => navigate('/shop')}
             className="text-sm text-slate-600 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors flex items-center"
           >
             View all <FiArrowRight className="ml-1" />

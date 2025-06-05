@@ -3,7 +3,7 @@ const products = [
     id: 1,
     name: "Traditional Kente Cloth Dress",
     price: 159.99,
-    category: "women",
+    category: "wom",
     description: "Authentic Ghanaian Kente cloth dress with vibrant gold and red patterns, perfect for special occasions.\n\nHandwoven by master artisans in Ghana using traditional techniques passed down through generations. The intricate patterns each tell a story and represent different proverbs from Akan culture.",
     shortDescription: "Authentic Ghanaian Kente cloth dress with vibrant gold and red patterns",
     rating: 4.8,
@@ -172,10 +172,89 @@ const products = [
       "Set of 2 different prints"
     ],
     sizes: ["0-3M", "3-6M", "6-12M"]
+  },
+  {
+    id: 24,
+    name: "His & Hers Matching Ankara T-Shirts",
+    price: 39.99,
+    category: "his & hers",
+    description: "Set of matching Ankara print t-shirts for couples, celebrating unity and style.\n\nMade from soft cotton with vibrant African wax prints, perfect for casual outings or special occasions.",
+    shortDescription: "Matching Ankara print t-shirts for couples",
+    rating: 4.7,
+    image: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80",
+    additionalImages: [
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1520975695911-0a7a7a7a7a7a?auto=format&fit=crop&w=800&q=80"
+    ],
+    brand: "CoupleWear",
+    inStock: true,
+    discount: 5,
+    originalPrice: 42.00,
+    tags: ["his & hers", "couples", "ankara", "matching"],
+    reviews: [
+      {
+        id: 1,
+        user: "John D.",
+        rating: 5,
+        date: "2023-09-20",
+        title: "Love these shirts!",
+        comment: "Perfect fit and great quality. My partner and I love wearing these together.",
+        verified: true
+      }
+    ],
+    sku: "HHM-024",
+    featured: true,
+    material: "100% Cotton",
+    details: [
+      "Soft cotton fabric",
+      "Machine washable",
+      "Made in Ghana",
+      "Available in sizes S-XL",
+      "Unisex fit"
+    ],
+    sizes: ["S", "M", "L", "XL"]
+  },
+  {
+    id: 25,
+    name: "His & Hers Leather Sandals",
+    price: 59.99,
+    category: "his & hers",
+    description: "Comfortable and stylish leather sandals for him and her, handcrafted with traditional techniques.\n\nPerfect for warm weather and casual wear, these sandals offer durability and elegance.",
+    shortDescription: "Comfortable and stylish leather sandals for couples",
+    rating: 4.5,
+    image: "https://images.unsplash.com/photo-1520975695911-0a7a7a7a7a7a?auto=format&fit=crop&w=800&q=80",
+    additionalImages: [
+      "https://images.unsplash.com/photo-1520975695911-0a7a7a7a7a7a?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80"
+    ],
+    brand: "CoupleWear",
+    inStock: true,
+    discount: 0,
+    originalPrice: 59.99,
+    tags: ["his & hers", "leather", "sandals", "handcrafted"],
+    reviews: [
+      {
+        id: 1,
+        user: "Sarah L.",
+        rating: 5,
+        date: "2023-09-18",
+        title: "Very comfortable",
+        comment: "These sandals are perfect for summer. Great craftsmanship and fit well.",
+        verified: true
+      }
+    ],
+    sku: "HHL-025",
+    featured: false,
+    material: "Genuine Leather",
+    details: [
+      "Handcrafted leather",
+      "Durable sole",
+      "Made in Nigeria",
+      "Available in sizes 6-11",
+      "Unisex design"
+    ],
+    sizes: ["6", "7", "8", "9", "10", "11"]
   }
 ];
 
-
-
-
-export default products
+export default products;

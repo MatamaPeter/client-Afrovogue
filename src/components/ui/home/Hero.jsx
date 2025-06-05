@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { FiArrowRight } from 'react-icons/fi';
-import featuredProducts from '../../../assets/data.js'; // Assuming this path is correct
-
+import { useNavigate } from 'react-router-dom';
+import featuredProducts from '../../../assets/data.js'; 
 function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
   // Limit featured products to 5
   const featuredProductsLimited = featuredProducts.filter(product => product.featured).slice(0, 5);
@@ -78,8 +79,10 @@ function Hero() {
               {heroSlides[currentSlide].subtitle}
             </p>
             <div className={`w-16 h-0.5 ${heroSlides[currentSlide].accent.replace('text', 'bg')} mx-auto animate-scaleX origin-left`}></div>
-            <button className={`mt-6 px-8 py-3 ${heroSlides[currentSlide].accent.replace('text', 'bg')} text-white rounded-full text-sm font-medium hover:opacity-90 transition-all transform hover:scale-105 animate-fadeIn delay-200 shadow-lg hover:shadow-xl relative overflow-hidden
-            before:content-[''] before:absolute before:inset-0 before:bg-white/20 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 before:origin-left`}> {/* Added pseudo-element for subtle hover effect */}
+            <button 
+              onClick={() => navigate('/shop')}
+              className={`mt-6 px-8 py-3 ${heroSlides[currentSlide].accent.replace('text', 'bg')} text-white rounded-full text-sm font-medium hover:opacity-90 transition-all transform hover:scale-105 animate-fadeIn delay-200 shadow-lg hover:shadow-xl relative overflow-hidden
+              before:content-[''] before:absolute before:inset-0 before:bg-white/20 before:scale-x-0 before:transition-transform before:duration-300 hover:before:scale-x-100 before:origin-left`}> {/* Added pseudo-element for subtle hover effect */}
               SHOP NOW
             </button>
           </div>
@@ -142,6 +145,7 @@ function Hero() {
                 <div 
                   key={product.id} 
                   className="flex items-center justify-between p-3 rounded-lg hover:bg-white/30 dark:hover:bg-black/20 transition-colors cursor-pointer group transform hover:scale-[1.01]" // Added hover scale
+                  onClick={() => navigate('/shop')}
                 >
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-slate-100">
                     {product.name}
