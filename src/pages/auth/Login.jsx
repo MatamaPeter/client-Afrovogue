@@ -5,7 +5,6 @@ import { FiMail, FiLock, FiArrowRight, FiX, FiEye, FiEyeOff } from "react-icons/
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { ThemeContext } from "./../../context/ThemeContext.jsx";
-import mockUsers from "../../assets/users.js";
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -28,30 +27,54 @@ const LoginForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setMessage("");
 
-    const user = mockUsers.find(
-      (u) => u.email === formData.email && u.password === formData.password
-    );
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, password: formData.password }),
+      });
 
-    setTimeout(() => {
-      if (user) {
-        setMessage(`Welcome back, ${user.name}!`);
-        localStorage.setItem('loggedInUser', JSON.stringify(user));
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage(`Welcome back, ${data.firstName}!`);
+        localStorage.setItem('loggedInUser', JSON.stringify(data));
         navigate("/");
       } else {
-        setMessage("Invalid credentials. Please try again.");
+        setMessage(data.message || "Invalid credentials. Please try again.");
       }
-      setIsSubmitting(false);
-    }, 1500);
+    } catch {
+      setMessage("An error occurred. Please try again.");
+    }
+
+    setIsSubmitting(false);
   };
 
-  const handleGoogleSuccess = (credentialResponse) => {
-    console.log("Google credential:", credentialResponse.credential);
-    setMessage("Google login successful! Redirecting...");
-    setTimeout(() => navigate("/"), 1000);
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const response = await fetch("/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: credentialResponse.credential }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage("Google login successful! Redirecting...");
+        localStorage.setItem('loggedInUser', JSON.stringify(data));
+        setTimeout(() => navigate("/"), 1000);
+      } else {
+        setMessage(data.message || "Google login failed. Please try again.");
+      }
+    } catch {
+      setMessage("Google login failed. Please try again.");
+    }
   };
 
   const handleGoogleError = () => {
@@ -61,8 +84,8 @@ const LoginForm = () => {
   const dismissMessage = () => setMessage("");
 
   return (
-    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-      <div className={`min-h-screen flex items-center justify-center relative px-4 py-12 ${darkMode ? "bg-gray-900" : "bg-gradient-to-br from-blue-50 to-indigo-100"}`}>
+<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+<div className={`min-h-screen flex items-center justify-center relative px-4 py-12 ${darkMode ? "bg-gray-900" : "bg-gradient-to-br from-blue-50 to-indigo-100"}`}>
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {[...Array(5)].map((_, i) => (

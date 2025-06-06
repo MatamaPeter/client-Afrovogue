@@ -27,7 +27,7 @@ const ProfileModal = ({
               <div className="relative mx-auto mb-6">
                 <div className="relative">
                   <img 
-                    src={user.avatar} 
+                    src={user.profilePhoto || '/user.png'} 
                     alt={user.name} 
                     className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-white dark:border-gray-800 shadow-xl"
                   />
