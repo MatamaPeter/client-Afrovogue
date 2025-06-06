@@ -1,83 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Package, Truck, Calendar, MapPin, Phone, Mail, XCircle, CheckCircle, Clock, RefreshCw } from 'lucide-react';
+import mockOrders from './../assets/orders.js';
 
-const mockOrders = [
-  {
-    id: 'AFROVOGUE-2025001',
-    userId: 1,
-    date: '2025-05-28',
-    status: 'Delivered',
-    total: 185.99,
-    deliveryAddress: '123 Nairobi Street, Westlands, Nairobi',
-    trackingNumber: 'AV2025001TRK',
-    estimatedDelivery: '2025-05-30',
-    paymentMethod: 'Credit Card',
-    items: [
-      { id: 101, name: 'Ankara Print Maxi Dress', quantity: 1, price: 99.99, image: 'https://placehold.co/100x100/A020F0/ffffff?text=Dress', rating: 5 },
-      { id: 102, name: 'Kente Pattern Scarf', quantity: 2, price: 25.00, image: 'https://placehold.co/100x100/F020A0/ffffff?text=Scarf', rating: 4 },
-      { id: 103, name: 'Leather Sandals', quantity: 1, price: 36.00, image: 'https://placehold.co/100x100/20A0F0/ffffff?text=Sandals', rating: 5 },
-    ],
-  },
-  {
-    id: 'AFROVOGUE-2025002',
-    userId: 1,
-    date: '2025-05-20',
-    status: 'Processing',
-    total: 75.50,
-    deliveryAddress: '456 Karen Road, Karen, Nairobi',
-    trackingNumber: 'AV2025002TRK',
-    estimatedDelivery: '2025-06-08',
-    paymentMethod: 'M-Pesa',
-    items: [
-      { id: 104, name: 'Adire Print T-Shirt', quantity: 1, price: 45.50, image: 'https://placehold.co/100x100/00A0F0/ffffff?text=T-Shirt', rating: 0 },
-      { id: 105, name: 'Beaded Bracelet Set', quantity: 1, price: 30.00, image: 'https://placehold.co/100x100/F0F020/ffffff?text=Bracelet', rating: 0 },
-    ],
-  },
-  {
-    id: 'AFROVOGUE-2025003',
-    userId: 1,
-    date: '2025-05-15',
-    status: 'Cancelled',
-    total: 120.00,
-    deliveryAddress: '789 Kilimani Avenue, Kilimani, Nairobi',
-    trackingNumber: 'AV2025003TRK',
-    estimatedDelivery: null,
-    paymentMethod: 'Bank Transfer',
-    items: [
-      { id: 106, name: 'Bogolan Mudcloth Jacket', quantity: 1, price: 120.00, image: 'https://placehold.co/100x100/A0F020/ffffff?text=Jacket', rating: 0 },
-    ],
-  },
-  {
-    id: 'AFROVOGUE-2025004',
-    userId: 1,
-    date: '2025-04-01',
-    status: 'Delivered',
-    total: 55.00,
-    deliveryAddress: '321 Riverside Drive, Westlands, Nairobi',
-    trackingNumber: 'AV2025004TRK',
-    estimatedDelivery: '2025-04-05',
-    paymentMethod: 'Credit Card',
-    items: [
-      { id: 107, name: 'African Print Headband', quantity: 3, price: 10.00, image: 'https://placehold.co/100x100/F020F0/ffffff?text=Headband', rating: 4 },
-      { id: 108, name: 'Wooden Earrings', quantity: 1, price: 25.00, image: 'https://placehold.co/100x100/20F0A0/ffffff?text=Earrings', rating: 5 },
-    ],
-  },
-  {
-    id: 'AFROVOGUE-2025005',
-    userId: 1,
-    date: '2025-03-15',
-    status: 'Shipped',
-    total: 199.99,
-    deliveryAddress: '555 Ngong Road, South C, Nairobi',
-    trackingNumber: 'AV2025005TRK',
-    estimatedDelivery: '2025-06-10',
-    paymentMethod: 'M-Pesa',
-    items: [
-      { id: 109, name: 'Traditional Dashiki Shirt', quantity: 1, price: 89.99, image: 'https://placehold.co/100x100/FF6B35/ffffff?text=Dashiki', rating: 0 },
-      { id: 110, name: 'Handwoven Basket', quantity: 2, price: 55.00, image: 'https://placehold.co/100x100/4ECDC4/ffffff?text=Basket', rating: 0 },
-    ],
-  },
-];
 
 const getStatusClasses = (status) => {
   switch (status) {
@@ -110,15 +35,52 @@ const getStatusIcon = (status) => {
 };
 
 const OrderTracking = () => {
+  const navigate = useNavigate();
   const [trackingNumber, setTrackingNumber] = useState('');
   const [order, setOrder] = useState(null);
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
+
+  // Check if user is logged in and handle URL params
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    if (!loggedInUser) {
+      navigate('/auth/login');
+      return;
+    }
+    setUser(JSON.parse(loggedInUser));
+
+    // Check for tracking number in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const trackingParam = urlParams.get('tracking');
+    if (trackingParam) {
+      setTrackingNumber(trackingParam);
+      // Find order that matches tracking number
+      const userObj = JSON.parse(loggedInUser);
+      const foundOrder = mockOrders.find(
+        (o) => 
+          o.userId === userObj.id && 
+          (o.trackingNumber.toLowerCase() === trackingParam.toLowerCase() || 
+           o.id.toLowerCase() === trackingParam.toLowerCase())
+      );
+      if (foundOrder) {
+        setOrder(foundOrder);
+      } else {
+        setError('Order not found. Please check the tracking number or order ID.');
+      }
+    }
+  }, [navigate]);
 
   const searchOrder = () => {
     setError(null);
+    // Find order that matches tracking number or order ID and belongs to the logged-in user
     const foundOrder = mockOrders.find(
-      (o) => o.trackingNumber.toLowerCase() === trackingNumber.toLowerCase() || o.id.toLowerCase() === trackingNumber.toLowerCase()
+      (o) => 
+        o.userId === user?.id && 
+        (o.trackingNumber.toLowerCase() === trackingNumber.toLowerCase() || 
+         o.id.toLowerCase() === trackingNumber.toLowerCase())
     );
+
     if (foundOrder) {
       setOrder(foundOrder);
     } else {
