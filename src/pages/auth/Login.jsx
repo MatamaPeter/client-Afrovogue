@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { FiMail, FiLock, FiArrowRight, FiX } from "react-icons/fi";
+import { FiMail, FiLock, FiArrowRight, FiX, FiEye, FiEyeOff } from "react-icons/fi";
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { ThemeContext } from "./../../context/ThemeContext.jsx"
+import { ThemeContext } from "./../../context/ThemeContext.jsx";
 import mockUsers from "../../assets/users.js";
 
 const LoginForm = () => {
@@ -15,10 +15,9 @@ const LoginForm = () => {
   });
 
   const { darkMode } = useContext(ThemeContext);
-
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [passwordFocused, setPasswordFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -39,12 +38,11 @@ const LoginForm = () => {
 
     setTimeout(() => {
       if (user) {
-        setMessage(`Welcome back, ${user.name}! You're now logged in.`);
-        // Set loggedInUser in localStorage for Header component to detect
+        setMessage(`Welcome back, ${user.name}!`);
         localStorage.setItem('loggedInUser', JSON.stringify(user));
         navigate("/");
       } else {
-        setMessage("Invalid email or password. Please try again.");
+        setMessage("Invalid credentials. Please try again.");
       }
       setIsSubmitting(false);
     }, 1500);
@@ -52,42 +50,70 @@ const LoginForm = () => {
 
   const handleGoogleSuccess = (credentialResponse) => {
     console.log("Google credential:", credentialResponse.credential);
-    setMessage("Google login successful! Welcome back.");
+    setMessage("Google login successful! Redirecting...");
+    setTimeout(() => navigate("/"), 1000);
   };
 
   const handleGoogleError = () => {
-    setMessage("Google login failed. Please try another method.");
+    setMessage("Google login failed. Please try again.");
   };
 
   const dismissMessage = () => setMessage("");
 
   return (
     <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
-      <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12">
+      <div className={`min-h-screen flex items-center justify-center relative px-4 py-12 ${darkMode ? "bg-gray-900" : "bg-gradient-to-br from-blue-50 to-indigo-100"}`}>
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(5)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 100 }}
+              animate={{ opacity: 0.1, y: 0 }}
+              transition={{ duration: 2, delay: i * 0.3 }}
+              className={`absolute rounded-full ${darkMode ? "bg-indigo-500" : "bg-indigo-300"}`}
+              style={{
+                width: `${Math.random() * 200 + 100}px`,
+                height: `${Math.random() * 200 + 100}px`,
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                filter: "blur(40px)"
+              }}
+            />
+          ))}
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="max-w-md w-full bg-surface rounded-2xl shadow-xl overflow-hidden"
+          className={`max-w-md w-full rounded-2xl overflow-hidden shadow-xl ${darkMode ? "bg-gray-800 border-gray-700" : "bg-white"}`}
         >
           <div className="p-8">
             <div className="text-center mb-8">
-              <motion.img
-                src={darkMode ? "/logo_light.png" : "/logo.png"}
-                alt="Company Logo"
+              <motion.div
                 initial={{ scale: 0.9 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.5 }}
-                className="h-12 mx-auto mb-4"
-              />
-              <h2 className="text-3xl font-bold text-textPrimary">Welcome Back</h2>
-              <p className="mt-2 text-textSecondary">Sign in to your account</p>
+                transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
+                className="flex justify-center"
+              >
+                <div className={`p-3 rounded-full ${darkMode ? "bg-gray-700" : "bg-indigo-50"} mb-6`}>
+                  <FiMail className={`h-10 w-10 ${darkMode ? "text-indigo-400" : "text-indigo-600"}`} />
+                </div>
+              </motion.div>
+              <h2 className={`text-3xl font-bold mb-2 ${darkMode ? "text-white" : "text-gray-800"}`}>Welcome Back</h2>
+              <p className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>Sign in to continue</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiMail className="h-5 w-5 text-textSecondary" />
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+                className="relative group"
+              >
+                <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
+                  <FiMail className="h-5 w-5" />
                 </div>
                 <input
                   type="email"
@@ -96,42 +122,43 @@ const LoginForm = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 text-textPrimary placeholder-textSecondary transition duration-200 bg-surface"
+                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${darkMode ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-indigo-500 focus:ring-indigo-500" : "bg-white border-gray-300 text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500"} transition duration-200`}
                 />
-              </div>
+              </motion.div>
 
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiLock className="h-5 w-5 text-textSecondary" />
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="relative group"
+              >
+                <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
+                  <FiLock className="h-5 w-5" />
                 </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
-                  onFocus={() => setPasswordFocused(true)}
-                  onBlur={() => setPasswordFocused(false)}
                   required
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 text-textPrimary placeholder-textSecondary transition duration-200 bg-surface"
+                  className={`w-full pl-10 pr-12 py-3 rounded-lg border ${darkMode ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-indigo-500 focus:ring-indigo-500" : "bg-white border-gray-300 text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500"} transition duration-200`}
                 />
-                {passwordFocused && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-2 p-3 bg-background rounded-lg text-sm text-textSecondary"
-                  >
-                    <Link
-                      to="/forgot-password"
-                      className="text-primary hover:text-primaryHover text-sm font-medium"
-                    >
-                      Forgot password?
-                    </Link>
-                  </motion.div>
-                )}
-              </div>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={`absolute inset-y-0 right-0 pr-3 flex items-center ${darkMode ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"}`}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </motion.div>
 
-              <div className="flex items-center justify-between">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex items-center justify-between"
+              >
                 <div className="flex items-center">
                   <input
                     id="remember-me"
@@ -139,23 +166,32 @@ const LoginForm = () => {
                     type="checkbox"
                     checked={formData.remember}
                     onChange={handleChange}
-                    className="h-4 w-4 rounded border-secondary text-primary focus:ring-primary"
+                    className={`h-4 w-4 rounded ${darkMode ? "bg-gray-700 border-gray-600 text-indigo-500 focus:ring-indigo-500/50" : "bg-white border-gray-300 text-indigo-600 focus:ring-indigo-500"}`}
                   />
                   <label
                     htmlFor="remember-me"
-                    className="ml-2 block text-sm text-textSecondary"
+                    className={`ml-2 block text-sm ${darkMode ? "text-gray-400" : "text-gray-600"}`}
                   >
                     Remember me
                   </label>
                 </div>
-              </div>
+                <Link
+                  to="/forgot-password"
+                  className={`text-sm font-medium ${darkMode ? "text-indigo-400 hover:text-indigo-300" : "text-indigo-600 hover:text-indigo-500"}`}
+                >
+                  Forgot password?
+                </Link>
+              </motion.div>
 
               <motion.button
                 type="submit"
                 disabled={isSubmitting}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
                 whileHover={!isSubmitting ? { scale: 1.02 } : {}}
                 whileTap={!isSubmitting ? { scale: 0.98 } : {}}
-                className={`w-full flex justify-center items-center py-3 px-4 rounded-lg bg-primary hover:bg-primaryHover text-white font-semibold shadow-md transition duration-200 ${
+                className={`w-full flex justify-center items-center py-3 px-4 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white font-medium shadow-md transition duration-200 ${
                   isSubmitting ? "opacity-80 cursor-not-allowed" : ""
                 }`}
               >
@@ -184,35 +220,44 @@ const LoginForm = () => {
                     Signing in...
                   </div>
                 ) : (
-                  <>
+                  <motion.div
+                    className="flex items-center"
+                    whileHover={{ x: 5 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
                     Sign In <FiArrowRight className="ml-2" />
-                  </>
+                  </motion.div>
                 )}
               </motion.button>
             </form>
 
             <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-secondary"></div>
+              <div className={`absolute inset-0 flex items-center ${darkMode ? "border-gray-700" : "border-gray-200"}`}>
+                <div className={`w-full border-t ${darkMode ? "border-gray-700" : "border-gray-200"}`}></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-surface text-textSecondary">
+                <span className={`px-4 ${darkMode ? "bg-gray-800 text-gray-400" : "bg-white text-gray-500"}`}>
                   Or continue with
                 </span>
               </div>
             </div>
 
-            <div className="flex justify-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="flex justify-center"
+            >
               <GoogleLogin
                 onSuccess={handleGoogleSuccess}
                 onError={handleGoogleError}
                 useOneTap
                 shape="pill"
-                theme="filled_blue"
+                theme={darkMode ? "filled_black" : "filled_blue"}
                 size="large"
                 text="signin_with"
               />
-            </div>
+            </motion.div>
 
             <AnimatePresence>
               {message && (
@@ -220,16 +265,16 @@ const LoginForm = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className={`mt-6 p-3 rounded-lg text-center font-medium flex justify-between items-center ${
+                  className={`mt-6 p-4 rounded-lg text-center font-medium flex justify-between items-center ${
                     message.includes("failed")
-                      ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
-                      : "bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400"
+                      ? `${darkMode ? "bg-red-900/30 text-red-400" : "bg-red-50 text-red-600"}`
+                      : `${darkMode ? "bg-green-900/30 text-green-400" : "bg-green-50 text-green-600"}`
                   }`}
                 >
                   <span>{message}</span>
                   <button
                     onClick={dismissMessage}
-                    className="text-textSecondary hover:text-textPrimary"
+                    className={`${darkMode ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"}`}
                   >
                     <FiX />
                   </button>
@@ -238,17 +283,22 @@ const LoginForm = () => {
             </AnimatePresence>
           </div>
 
-          <div className="bg-background px-8 py-4 text-center">
-            <p className="text-textSecondary">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className={`px-8 py-5 text-center ${darkMode ? "bg-gray-700/50" : "bg-gray-50"}`}
+          >
+            <p className={`${darkMode ? "text-gray-400" : "text-gray-600"}`}>
               Don't have an account?{" "}
               <Link
                 to="/auth/register"
-                className="text-primary hover:text-primaryHover font-medium transition duration-200"
+                className={`font-medium transition duration-200 hover:underline ${darkMode ? "text-indigo-400 hover:text-indigo-300" : "text-indigo-600 hover:text-indigo-500"}`}
               >
                 Sign up
               </Link>
             </p>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </GoogleOAuthProvider>

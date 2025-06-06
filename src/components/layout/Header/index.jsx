@@ -34,6 +34,7 @@ const Header = () => {
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
 
   // Generate categories from products
@@ -55,6 +56,15 @@ const Header = () => {
   // Mock user state - replace with your auth logic
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem('loggedInUser');
@@ -113,42 +123,43 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-40">
-        <div className="container mx-auto px-4 sm:px-5">
+      <header className={`bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-sm backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90' : ''}`}>
+        <div className="container mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Mobile Menu Button */}
             <button
               onClick={() => setShowMobileMenu(true)}
-              className="lg:hidden text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 touch-manipulation"
+              className="lg:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 touch-manipulation"
+              aria-label="Open menu"
             >
-              <Menu size={20} />
+              <Menu size={20} strokeWidth={1.5} />
             </button>
 
             {/* Logo */}
             <div className="flex items-center flex-1 lg:flex-initial justify-center lg:justify-start">
-              <Link to="/" className="flex items-center space-x-3 sm:space-x-5">
+              <Link to="/" className="flex items-center space-x-3 sm:space-x-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-md">
                 <div className="relative">
                   <div className="flex items-center justify-center">
                     <span>
                       <img
                         src={darkMode ? "/logo_light.png" : "/logo.png"}
                         alt="AfroVogue"
-                        className="h-8 sm:h-10 lg:h-12 w-auto transition-all duration-300"
+                        className="h-8 sm:h-10 lg:h-12 w-auto transition-all duration-300 hover:scale-105"
                       />
                     </span>
                   </div>
                 </div>
                 <span className="flex flex-col -space-y-1 hidden sm:block">
-                  <h1 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white">
+                  <h1 className="text-xl lg:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
                     Afrivogue
                   </h1>
-                  <div className="text-xs dark:text-white">proudly African</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">proudly African</div>
                 </span>
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex space-x-1">
+            <nav className="hidden lg:flex space-x-1 mx-6">
               <NavItems items={navItems} />
             </nav>
 
@@ -160,17 +171,19 @@ const Header = () => {
               {/* Mobile Search Icon */}
               <button 
                 onClick={() => setShowMobileSearch(true)}
-                className="lg:hidden text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 touch-manipulation"
+                className="lg:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                aria-label="Search"
               >
-                <Search size={18} />
+                <Search size={18} strokeWidth={1.5} />
               </button>
 
               {/* Wishlist */}
               <button 
                 onClick={() => setShowWishlistModal(true)}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 group touch-manipulation"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 group touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                aria-label="Wishlist"
               >
-                <Heart size={18} />
+                <Heart size={18} strokeWidth={1.5} />
                 {wishlistItems.length > 0 && (
                   <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                     {wishlistItems.length}
@@ -182,12 +195,13 @@ const Header = () => {
               {isLoggedIn && (
                 <button
                   onClick={() => setShowNotificationsModal(true)}
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 group touch-manipulation"
+                  className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 group touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                   title="Notifications"
+                  aria-label="Notifications"
                 >
-                  <Bell size={18} />
+                  <Bell size={18} strokeWidth={1.5} />
                   {userNotifications.length > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                       {userNotifications.length}
                     </span>
                   )}
@@ -197,9 +211,10 @@ const Header = () => {
               {/* Shopping Cart */}
               <button 
                 onClick={() => setShowCartModal(true)}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 group touch-manipulation"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 group touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                aria-label="Shopping cart"
               >
-                <ShoppingBag size={18} />
+                <ShoppingBag size={18} strokeWidth={1.5} />
                 {getTotalItems() > 0 && (
                   <span className="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                     {getTotalItems()}
@@ -211,25 +226,27 @@ const Header = () => {
               {isLoggedIn ? (
                 <button 
                   onClick={() => setShowProfileModal(true)}
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 touch-manipulation"
+                  className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                  aria-label="User profile"
                 >
-                  <User size={18} />
+                  <User size={18} strokeWidth={1.5} />
                 </button>
               ) : (
                 <button
                   onClick={() => navigate('/auth/login')}
-                  className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 touch-manipulation"
+                  className="hidden sm:inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
                 >
-                  Login
+                  Sign In
                 </button>
               )}
 
               {/* Dark Mode Toggle */}
               <button
                 onClick={toggleDarkMode}
-                className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 touch-manipulation"
+                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-200 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                aria-label={`Toggle ${darkMode ? 'light' : 'dark'} mode`}
               >
-                {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+                {darkMode ? <Sun size={18} strokeWidth={1.5} /> : <Moon size={18} strokeWidth={1.5} />}
               </button>
             </div>
           </div>
