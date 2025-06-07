@@ -11,7 +11,7 @@ const ProfileModal = ({
   setUser
 }) => {
   const handleLogout = () => {
-    // localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('loggedInUser');
     setIsLoggedIn(false);
     setUser(null);
     onClose();
