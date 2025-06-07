@@ -28,40 +28,39 @@ import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
   return (
-    <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
-
     <ThemeProvider>
       <CartWishlistProvider>
-        <Routes>
-          {/* Routes with Header & Footer */}
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/shop/:productId" element={<ProductDetails />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/custom-order" element={<CustomOrders />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/faqs" element={<Faqs />} />
-            <Route path="/shipping" element={<Shipping />} />
-            <Route path="/returns" element={<Returns />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/order-tracking" element={<OrderTracking />} />
-            <Route path="/account/settings" element={<Settings />} />
-          </Route>
+        <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
+          <Routes>
+            {/* Routes with Header & Footer */}
+            <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/shop/:productId" element={<ProductDetails />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/custom-order" element={<CustomOrders />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/faqs" element={<Faqs />} />
+              <Route path="/shipping" element={<Shipping />} />
+              <Route path="/returns" element={<Returns />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/order-tracking" element={<OrderTracking />} />
+              <Route path="/account/settings" element={<Settings />} />
+            </Route>
 
-          {/* Auth pages without layout */}
-          <Route path="/auth/register" element={<RegisterForm />} />
-          <Route path="/auth/login" element={<LoginForm />} />
+            {/* Auth routes without Layout */}
+            <Route path="/auth/register" element={<RegisterForm />} />
+            <Route path="/auth/login" element={<LoginForm />} />
 
-          {/* 404 Page */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* 404 Not Found route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </CartWishlistProvider>
-      </ThemeProvider>
-      </div>
+    </ThemeProvider>
   );
 }
 

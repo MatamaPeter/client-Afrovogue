@@ -12,6 +12,7 @@ const RegisterForm = () => {
     lastName: "",
     email: "",
     password: "",
+    phone: "",
   });
 
   const { darkMode } = useContext(ThemeContext);
@@ -173,6 +174,26 @@ const RegisterForm = () => {
                   name="email"
                   placeholder="Email Address"
                   value={formData.email}
+                  onChange={handleChange}
+                  required
+                  className={`w-full pl-10 pr-4 py-3 rounded-lg border ${darkMode ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-indigo-500 focus:ring-indigo-500" : "bg-white border-gray-300 text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500"} transition duration-200`}
+                />
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.25 }}
+                className="relative group"
+              >
+                <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors ${darkMode ? "text-gray-500" : "text-gray-400"}`}>
+                  <FiUser className="h-5 w-5" />
+                </div>
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Phone Number"
+                  value={formData.phone}
                   onChange={handleChange}
                   required
                   className={`w-full pl-10 pr-4 py-3 rounded-lg border ${darkMode ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-indigo-500 focus:ring-indigo-500" : "bg-white border-gray-300 text-gray-800 placeholder-gray-500 focus:border-indigo-500 focus:ring-indigo-500"} transition duration-200`}
